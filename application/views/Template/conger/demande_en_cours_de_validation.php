@@ -178,7 +178,7 @@
                             fetch();
                             swal.fire(
                                 "Accepter !",
-                                'Demande de congé acceptée :)',
+                                'Demande de congé est acceptée :)',
                                 'success'
                             );
                         } else {
