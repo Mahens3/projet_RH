@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 26 oct. 2023 à 05:49
+-- Généré le : mer. 22 nov. 2023 à 09:10
 -- Version du serveur : 8.0.31
 -- Version de PHP : 8.0.26
 
@@ -56,26 +56,28 @@ DROP TABLE IF EXISTS `demande_conger`;
 CREATE TABLE IF NOT EXISTS `demande_conger` (
   `id` int NOT NULL AUTO_INCREMENT,
   `code_em` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `type_conger` varchar(64) NOT NULL,
+  `type_conger` varchar(64) CHARACTER SET latin1 NOT NULL,
+  `exceptionnel` varchar(64) NOT NULL,
   `date_debut` date DEFAULT NULL,
   `date_fin` date DEFAULT NULL,
   `duree_conger` float DEFAULT NULL,
   `date_demande` date DEFAULT NULL,
+  `reason` varchar(255) NOT NULL,
   `img_reason` varchar(1024) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `status_conger` enum('En attente','Accepter','Rejeter') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'En attente',
+  `status_conger` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `demande_conger_ibfk_4` (`type_conger`),
   KEY `code_em` (`code_em`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `demande_conger`
 --
 
-INSERT INTO `demande_conger` (`id`, `code_em`, `type_conger`, `date_debut`, `date_fin`, `duree_conger`, `date_demande`, `img_reason`, `status_conger`) VALUES
-(1, 'T003', 'Maladie', '2023-10-28', '0000-00-00', 0.5, '2023-10-26', 'images1.jpeg', 'En attente'),
-(2, 'T002', 'Avec solde', '2023-10-30', '0000-00-00', 1, '2023-10-26', NULL, 'En attente'),
-(3, 'T003', 'Avec solde', '2023-10-28', '0000-00-00', 1, '2023-10-26', 'IMG_0638.JPG', 'En attente');
+INSERT INTO `demande_conger` (`id`, `code_em`, `type_conger`, `exceptionnel`, `date_debut`, `date_fin`, `duree_conger`, `date_demande`, `reason`, `img_reason`, `status_conger`) VALUES
+(1, 'T0002', 'Sans solde', '', '2023-11-14', '0000-00-00', 1, '2023-11-13', 'Vacance', 'undefined', 'Accepter'),
+(2, 'T0002', 'Maladie', '', '2023-11-21', '2023-11-24', 3, '2023-11-20', 'Mot de tête ', '367641285_1383726332564276_6712885282223857350_n.jpg', 'Rejeter'),
+(3, 'T0002', 'Sans solde', '', '2023-11-21', '0000-00-00', 1, '2023-11-20', '', 'undefined', 'Rejeter');
 
 -- --------------------------------------------------------
 
@@ -107,35 +109,33 @@ INSERT INTO `departement` (`id_dep`, `dep_name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `login`
+-- Structure de la table `notification`
 --
 
-DROP TABLE IF EXISTS `login`;
-CREATE TABLE IF NOT EXISTS `login` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `email` varchar(150) NOT NULL,
-  `password` varchar(150) NOT NULL,
-  `password_again` varchar(150) NOT NULL,
-  `role` varchar(20) NOT NULL,
-  `creer_le` timestamp NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DROP TABLE IF EXISTS `notification`;
+CREATE TABLE IF NOT EXISTS `notification` (
+  `id_notif` int NOT NULL AUTO_INCREMENT,
+  `id_conger` int NOT NULL,
+  `code_em` varchar(100) NOT NULL,
+  `nom` varchar(150) NOT NULL,
+  `prenom` varchar(150) NOT NULL,
+  `status_conger` varchar(25) NOT NULL,
+  `duree_conger` float NOT NULL,
+  `date_notification` date NOT NULL,
+  `date_debut` date NOT NULL,
+  `etat` varchar(10) NOT NULL,
+  PRIMARY KEY (`id_notif`),
+  KEY `id_conger` (`id_conger`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Déchargement des données de la table `login`
+-- Déchargement des données de la table `notification`
 --
 
-INSERT INTO `login` (`id`, `email`, `password`, `password_again`, `role`, `creer_le`) VALUES
-(1, 'admin@test.com', 'e10adc3949ba59abbe56e057f20f883e', 'e10adc3949ba59abbe56e057f20f883e', 'Admin', '2023-10-09 16:37:03'),
-(2, 'admin@test2.com', '0192023a7bbd73250516f069df18b500', '0192023a7bbd73250516f069df18b500', 'Admin', '2023-10-09 15:36:28'),
-(3, 'admin@telesourcia.com', '4607e782c4d86fd5364d7e4508bb10d9', '4607e782c4d86fd5364d7e4508bb10d9', 'Super_Admin', '2023-10-09 15:39:38'),
-(4, 'mahenina@gmail.com', '63a9f0ea7bb98050796b649e85481845', '63a9f0ea7bb98050796b649e85481845', 'Employer', '2023-10-09 15:45:23'),
-(5, 'mahenina@gmail.com', '63a9f0ea7bb98050796b649e85481845', '63a9f0ea7bb98050796b649e85481845', 'Employer', '2023-10-09 15:45:29'),
-(6, 'Philippe@gmail.com', '7e31452f98a4c3935c54ee6a8913a632', '7e31452f98a4c3935c54ee6a8913a632', 'Super_Admin', '2023-10-10 02:47:02'),
-(7, 'razakatiambolaphillipe@gmail.com', '2bf1f1e5cace10173e6d219ec177b1b5', '2bf1f1e5cace10173e6d219ec177b1b5', 'Super_Admin', '2023-10-10 05:37:13'),
-(8, 'test@gmail.com', 'e40f01afbb1b9ae3dd6747ced5bca532', 'e40f01afbb1b9ae3dd6747ced5bca532', 'Super_Admin', '2023-10-10 09:54:04'),
-(9, 'test2@gmail.com', '9ae2be73b58b565bce3e47493a56e26a', '9ae2be73b58b565bce3e47493a56e26a', 'Admin', '2023-10-10 10:00:09'),
-(10, 'Anjary@gmail.com', 'cb37d40f686d922033e4379f579fa0d9', 'cb37d40f686d922033e4379f579fa0d9', 'Super_Admin', '2023-10-12 02:42:00');
+INSERT INTO `notification` (`id_notif`, `id_conger`, `code_em`, `nom`, `prenom`, `status_conger`, `duree_conger`, `date_notification`, `date_debut`, `etat`) VALUES
+(1, 1, 'T0002', 'test', 'test', 'Accepter', 1, '2023-11-13', '2023-11-14', 'non lu'),
+(2, 2, 'T0002', 'test', 'test', 'Rejeter', 3, '2023-11-20', '2023-11-21', 'non lu'),
+(3, 3, 'T0002', 'test', 'test', 'Rejeter', 1, '2023-11-20', '2023-11-21', 'non lu');
 
 -- --------------------------------------------------------
 
@@ -153,28 +153,34 @@ CREATE TABLE IF NOT EXISTS `personnel` (
   `password` varchar(200) NOT NULL,
   `adresse` varchar(255) NOT NULL,
   `date_nais` date NOT NULL,
+  `CIN` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `contact` int NOT NULL,
+  `contact_proche` int DEFAULT NULL,
   `sexe` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `departement` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `post` varchar(100) NOT NULL,
+  `contrats` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `role` varchar(100) NOT NULL,
-  `date_creation` datetime NOT NULL,
+  `date_creation` date NOT NULL,
   `status` enum('actif','inactif') NOT NULL,
+  `profil` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `code` (`code_em`),
-  KEY `personnel_ibfk_1` (`departement`),
-  KEY `personnel_ibfk_2` (`post`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `departement` (`departement`),
+  KEY `post` (`post`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `personnel`
 --
 
-INSERT INTO `personnel` (`id`, `code_em`, `nom`, `prenom`, `email`, `password`, `adresse`, `date_nais`, `contact`, `sexe`, `departement`, `post`, `role`, `date_creation`, `status`) VALUES
-(10, 'T001', 'RAZAKATIAMBOLA', 'Mahenina', 'razakatiambolaphillipe@gmail.com', 'philux', 'Mahamasina 101', '2004-05-29', 342205018, 'homme', 'Informatique', 'Developpeur', 'Admin', '2023-10-24 10:23:00', 'actif'),
-(11, 'T002', 'RAZAKAMIHARIMBOLA', 'Mahafaly', 'razakamiharimbolaphillipe@gmail.com', 'mahafaly', 'Fianarantsoa 301', '1997-01-14', 347443255, 'homme', 'Production', 'Directeur des Operations', 'Admin', '2023-10-24 10:26:00', 'actif'),
-(14, 'T003', 'Niaina', 'Razafindrabe', 'admin@telesourcia.com', 'admin123', 'Mahamasina', '2000-04-12', 342205018, 'homme', 'Direction', 'Developpeur', 'Super_Admin', '2023-10-24 10:53:00', 'actif'),
-(15, 'T004', 'test', 'Philippe', 'admin@test.com', '123456', 'Mahamasina', '1999-04-23', 342205018, 'homme', 'Finance', 'Developpeur', 'Super_Admin', '2023-10-25 11:56:00', 'actif');
+INSERT INTO `personnel` (`id`, `code_em`, `nom`, `prenom`, `email`, `password`, `adresse`, `date_nais`, `CIN`, `contact`, `contact_proche`, `sexe`, `departement`, `post`, `contrats`, `role`, `date_creation`, `status`, `profil`) VALUES
+(2, 'T0002', 'test', 'test', 'admin@test.com', 'e10adc3949ba59abbe56e057f20f883e', 'Mahamasina', '2023-11-03', '20423526485', 384777400, 345481064, 'homme', 'Finance', 'Directeur Administratif et Financier', 'CDI', 'Employer', '2023-11-04', 'actif', NULL),
+(4, 'T0003', 'ERIC', 'Liza', 'liza@gmail.com', '24f6e3dc1bbc5a5dfb1e5c6481b94eb7', 'Mahamasina', '1994-12-02', '205019157054', 342205019, 345484687, 'homme', 'Finance', 'Chefs de projet', 'CDD', 'Admin', '2023-11-03', 'actif', NULL),
+(5, 'T0001', 'Mahenina', 'Philippe', 'razakatiambolaphillipe@gmail.com', 'e6258a92190d674138112e7df30bbc8f', 'Fianarantsoa 301', '2004-05-29', '205011157032', 342205018, 345481064, 'homme', 'Informatique', 'Stagiaire', 'CDD', 'Admin', '2023-11-06', 'actif', NULL),
+(6, 'T0004', 'Danielson', 'Sitrakiniaina', 'admin@telesourcia.com', '0192023a7bbd73250516f069df18b500', 'Fianarantsoa', '2003-11-10', '205011145789', 342205025, 331524878, 'homme', 'Informatique', 'Stagiaire', 'CDI', 'Super_Admin', '2023-11-09', 'actif', 'undefined'),
+(7, 'T0005', 'Mahefa ', 'Bienvenu', 'admin@test2.com', '0192023a7bbd73250516f069df18b500', 'Fianarantsoa', '2003-07-14', '205015246856', 343314582, 342578596, 'homme', 'Informatique', 'Responsable IT', 'CDI', 'Admin', '2023-11-09', 'actif', 'undefined'),
+(8, 'T0006', 'patrick', 'Finance', 'n+1@telesourcia.com', 'e10adc3949ba59abbe56e057f20f883e', 'Mahamasina', '2000-05-11', '202546976214', 342205017, 345879654, 'homme', 'Finance', 'Responsable logistique', 'CDD', 'n+1', '2023-11-13', 'actif', 'undefined');
 
 -- --------------------------------------------------------
 
@@ -227,23 +233,25 @@ INSERT INTO `post` (`id_post`, `design`) VALUES
 DROP TABLE IF EXISTS `solde_conger`;
 CREATE TABLE IF NOT EXISTS `solde_conger` (
   `id_solde` int NOT NULL AUTO_INCREMENT,
-  `em_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `code_em` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `nbr_jrs` float NOT NULL,
-  `date_dernier_mise_jrs` datetime NOT NULL,
-  `solde_actuel` float NOT NULL,
+  `date_dernier_mise_jrs` date NOT NULL,
+  `solde_exeptionnel` float NOT NULL,
   PRIMARY KEY (`id_solde`),
-  KEY `solde_conger_ibfk_1` (`em_id`)
+  KEY `em_id` (`code_em`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `solde_conger`
 --
 
-INSERT INTO `solde_conger` (`id_solde`, `em_id`, `nbr_jrs`, `date_dernier_mise_jrs`, `solde_actuel`) VALUES
-(1, 'T001', 2.5, '2023-10-24 10:23:00', 2.5),
-(2, 'T002', 2.5, '2023-10-24 10:26:00', 2.5),
-(5, 'T003', 2.5, '2023-10-24 10:53:00', 2.5),
-(6, 'T004', 2.5, '2023-10-25 11:56:00', 2.5);
+INSERT INTO `solde_conger` (`id_solde`, `code_em`, `nbr_jrs`, `date_dernier_mise_jrs`, `solde_exeptionnel`) VALUES
+(1, 'T0002', 1.5, '2023-11-09', 10),
+(2, 'T0003', 2.5, '2023-11-03', 10),
+(3, 'T0001', 2.5, '2023-11-09', 5),
+(4, 'T0004', 2.5, '2023-11-09', 10),
+(5, 'T0005', 2.5, '2023-11-09', 10),
+(6, 'T0006', 2.5, '2023-11-13', 10);
 
 -- --------------------------------------------------------
 
@@ -255,10 +263,10 @@ DROP TABLE IF EXISTS `type_conger`;
 CREATE TABLE IF NOT EXISTS `type_conger` (
   `type_id` int NOT NULL AUTO_INCREMENT,
   `nom` varchar(64) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `status` enum('Ouvert','Indisposé') NOT NULL DEFAULT 'Ouvert',
+  `status` enum('Ouvert','Indisposé') CHARACTER SET latin1 NOT NULL DEFAULT 'Ouvert',
   PRIMARY KEY (`type_id`),
   UNIQUE KEY `nom` (`nom`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `type_conger`
@@ -282,6 +290,12 @@ ALTER TABLE `demande_conger`
   ADD CONSTRAINT `demande_conger_ibfk_5` FOREIGN KEY (`code_em`) REFERENCES `personnel` (`code_em`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Contraintes pour la table `notification`
+--
+ALTER TABLE `notification`
+  ADD CONSTRAINT `notification_ibfk_1` FOREIGN KEY (`id_conger`) REFERENCES `demande_conger` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Contraintes pour la table `personnel`
 --
 ALTER TABLE `personnel`
@@ -292,7 +306,7 @@ ALTER TABLE `personnel`
 -- Contraintes pour la table `solde_conger`
 --
 ALTER TABLE `solde_conger`
-  ADD CONSTRAINT `solde_conger_ibfk_1` FOREIGN KEY (`em_id`) REFERENCES `personnel` (`code_em`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `solde_conger_ibfk_1` FOREIGN KEY (`code_em`) REFERENCES `personnel` (`code_em`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
